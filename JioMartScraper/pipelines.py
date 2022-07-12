@@ -22,7 +22,7 @@ class JiomartscraperPipeline:
         self.items = dict()
         self.list_items = list()
 
-    def write_to_sheet(self, i, sheet_name):
+    def write_to_sheet(self, sheet_name):
         try:
             self.worksheet = self.sheet.worksheet(sheet_name)
         except WorksheetNotFound:
@@ -54,7 +54,7 @@ class JiomartscraperPipeline:
         adapter = ItemAdapter(item)
         self.list_items.append(adapter.asdict())
         if spider.name == 'groceries':
-            self.write_to_sheet(1, 'Groceries')
+            self.write_to_sheet('Groceries')
         elif spider.name == 'home-kitchen':
-            self.write_to_sheet(2, 'Home And Kitchen')
+            self.write_to_sheet('Home And Kitchen')
         return item
