@@ -10,6 +10,7 @@ import gspread
 import json
 from gspread import Cell
 from gspread.exceptions import WorksheetNotFound
+from gspread_formatting import *
 
 
 class JiomartscraperPipeline:
@@ -48,7 +49,19 @@ class JiomartscraperPipeline:
                     else:
                         cells.append(Cell(row=i + 1, col=j + 1, value=item[key]))
         self.worksheet.update_cells(cells, value_input_option='USER_ENTERED')
+        self.format_cells()
         pass
+
+    def format_cells(self):
+        fmt = cellFormat(horizontalAlignment='CENTER', verticalAlignment='MIDDLE', wrapStrategy='WRAP',
+                         textFormat=textFormat(bold=True),
+                         borders=borders(top=border(style='SOLID'), bottom=border(style='SOLID'),
+                                         left=border(style='SOLID'), right=border(style='SOLID')))
+
+        format_cell_range(self.worksheet, 'A1:D1000', fmt)
+
+        set_row_height(self.worksheet, '1:1000', 140)
+        set_column_width(self.worksheet, 'A:D', 200)
 
     def process_item(self, item, spider):
         adapter = ItemAdapter(item)
@@ -57,4 +70,6 @@ class JiomartscraperPipeline:
             self.write_to_sheet('Groceries')
         elif spider.name == 'home-kitchen':
             self.write_to_sheet('Home And Kitchen')
+        elif spider.name == 'electronics':
+            self.write_to_sheet('Electronics')
         return item
